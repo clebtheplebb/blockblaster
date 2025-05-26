@@ -13,7 +13,7 @@ public class GUI extends JFrame {
         this.gridUI = new GridUI(grid);
         setTitle("Block Blaster");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(Grid.SIZE * CELL_SIZE + 100, Grid.SIZE * CELL_SIZE + 200); // Account for window borders
+        setSize(Grid.SIZE * CELL_SIZE + 80, Grid.SIZE * CELL_SIZE + 200); // Account for window borders
         setLocationRelativeTo(null);
         setResizable(false);
         add(gridUI);
