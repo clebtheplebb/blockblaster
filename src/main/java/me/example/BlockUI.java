@@ -24,6 +24,7 @@ public class BlockUI extends JPanel{
         this.blocks = blocks;
         // Set preferred width to match the grid (Grid.SIZE * BLOCK_CELL_SIZE)
         setPreferredSize(new java.awt.Dimension(Grid.SIZE * 32, BLOCK_CELL_SIZE * 5));
+        setOpaque(true); // Make background transparent
     }
 
     public void setBlocks(List<Block> blocks) {

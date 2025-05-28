@@ -61,20 +61,86 @@ public class BlockDragController extends MouseAdapter implements MouseMotionList
             dragLocation = e.getPoint();
             blockUI.setDraggedBlock(draggedBlock, dragLocation, dragOffsetX, dragOffsetY);
             blockUI.repaint();
+            // Convert mouse position to grid coordinates relative to gridUI
+            Point gridPoint = SwingUtilities.convertPoint(blockUI, dragLocation, gridUI);
+            int gridX = (gridPoint.x - 32) / 32;
+            int gridY = (gridPoint.y - 32) / 32;
+            boolean fits = false;
+            if (draggedBlock != null) {
+                int[][] shape = draggedBlock.getShape();
+                int shapeRows = shape.length;
+                int shapeCols = shape[0].length;
+                if (gridX >= 0 && gridY >= 0 &&
+                    gridX + shapeCols <= Grid.SIZE &&
+                    gridY + shapeRows <= Grid.SIZE) {
+                    fits = true;
+                }
+            }
+            if (fits) {
+                gridUI.setPreviewBlock(draggedBlock, gridX, gridY);
+            } else {
+                gridUI.clearPreviewBlock();
+            }
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // if (draggedBlock != null && dragLocation != null) {
-        //     // Convert dragLocation to grid coordinates and attempt to place block
-        //     Point gridPoint = SwingUtilities.convertPoint(blockUI, dragLocation, gridUI);
-        //     gridUI.tryPlaceBlock(draggedBlock, gridPoint.x, gridPoint.y);
-        //     // Remove block from BlockUI
-        //     blocks.remove(draggedBlockIndex);
-        //     blockUI.setBlocks(blocks);
-        // }
+        if (draggedBlock != null && dragLocation != null) {
+            // Convert dragLocation to grid coordinates relative to gridUI
+            Point gridPoint = SwingUtilities.convertPoint(blockUI, dragLocation, gridUI);
+            int gridX = (gridPoint.x - 32) / 32;
+            int gridY = (gridPoint.y - 32) / 32;
+            int[][] shape = draggedBlock.getShape();
+            int shapeRows = shape.length;
+            int shapeCols = shape[0].length;
+            // Only place if the block fits entirely in the grid
+            if (gridX >= 0 && gridY >= 0 &&
+                gridX + shapeCols <= Grid.SIZE &&
+                gridY + shapeRows <= Grid.SIZE) {
+                int[][] board = gridUI.getGrid().getBoard();
+                for (int i = 0; i < shapeRows; i++) {
+                    for (int j = 0; j < shapeCols; j++) {
+                        if (shape[i][j] != 0) {
+                            board[gridY + i][gridX + j] = 2; // 2 = yellow
+                        }
+                    }
+                }
+                // Clear full rows
+                for (int i = 0; i < Grid.SIZE; i++) {
+                    boolean fullRow = true;
+                    for (int j = 0; j < Grid.SIZE; j++) {
+                        if (board[i][j] == 0) {
+                            fullRow = false;
+                            break;
+                        }
+                    }
+                    if (fullRow) {
+                        for (int j = 0; j < Grid.SIZE; j++) {
+                            board[i][j] = 0;
+                        }
+                    }
+                }
+                // Clear full columns
+                for (int j = 0; j < Grid.SIZE; j++) {
+                    boolean fullCol = true;
+                    for (int i = 0; i < Grid.SIZE; i++) {
+                        if (board[i][j] == 0) {
+                            fullCol = false;
+                            break;
+                        }
+                    }
+                    if (fullCol) {
+                        for (int i = 0; i < Grid.SIZE; i++) {
+                            board[i][j] = 0;
+                        }
+                    }
+                }
+                gridUI.repaint();
+            }
+        }
         blockUI.clearDraggedBlock();
+        gridUI.clearPreviewBlock();
         draggedBlock = null;
         dragLocation = null;
         draggedBlockIndex = -1;
