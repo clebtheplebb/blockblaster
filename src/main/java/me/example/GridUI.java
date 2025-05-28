@@ -1,6 +1,9 @@
 package me.example;
 
 import javax.swing.JPanel;
+
+import me.example.Grid;
+
 import java.awt.Graphics;
 import java.awt.Color;
 
