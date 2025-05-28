@@ -32,6 +32,18 @@ public class Block {
         this.y = 0;
     }
 
+    public Block(String shape, int orientation, int row, int col) {
+        // Orientation is nx90 degrees
+        // Orientation 1 = 90 degree rotation counter clockwise
+        this.shape = BLOCKS.get(shape);
+        for (int i = 0; i < orientation; i++) {
+            this.shape = rotateCounterClockwise90(this.shape);
+        }
+        this.orientation = orientation;
+        this.x = col;
+        this.y = row;
+    }
+
     public int[][] getShape() {
         return shape;
     }

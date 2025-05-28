@@ -11,6 +11,7 @@ public class Main {
         GUI gui = new GUI(grid);
         gui.setVisible(true);
         boolean running = true;
+        boolean round = false;
         while (running) {
             long currentTime = System.currentTimeMillis();
             long lastUpateTime = System.currentTimeMillis();
@@ -18,7 +19,10 @@ public class Main {
 
             //update
             //render
-            gui.refresh();
+            if (round == false) {
+                gui.refresh();
+                round = true;
+            }
 
             long sleepTime = (long) (FRAME_TIME_MS - elapsedTime);
             if (sleepTime > 0) {

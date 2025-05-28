@@ -26,4 +26,8 @@ public class Grid {
     public int getSize() {
         return SIZE;
     }
+
+    public void setBoard(int[][] newBoard) {
+        this.board = newBoard;
+    }
 }
