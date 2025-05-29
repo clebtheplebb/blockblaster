@@ -7,6 +7,7 @@ public class Block {
     private int orientation;
     private int x;
     private int y;
+    private boolean placed = false;
 
     public static final Map<String, int[][]> BLOCKS = Map.of(
             "1x5", new int[][]{{1},{1},{1},{1},{1}},
@@ -77,5 +78,12 @@ public class Block {
             }
         }
         return rotated;
+    }
+
+    public boolean isPlaced() {
+        return placed;
+    }
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
     }
 }
