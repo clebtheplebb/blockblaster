@@ -11,7 +11,6 @@ public class Main {
         GUI gui = new GUI(grid);
         gui.setVisible(true);
         boolean running = true;
-        boolean round = false;
         while (running) {
             long currentTime = System.currentTimeMillis();
             long lastUpateTime = System.currentTimeMillis();
@@ -19,9 +18,21 @@ public class Main {
 
             //update
             //render
-            if (round == false) {
+            boolean allPlaced = false;
+            if (GUI.currentBlocks != null && !GUI.currentBlocks.isEmpty()) {
+                allPlaced = true;
+                for (Block block : GUI.currentBlocks) {
+                    if (!block.isPlaced()) {
+                        allPlaced = false;
+                        break;
+                    }
+                }
+            }
+            if (allPlaced) {
                 gui.refresh();
-                round = true;
+            }
+            if (GUI.currentBlocks == null || GUI.currentBlocks.isEmpty()) {
+                gui.refresh();
             }
 
             long sleepTime = (long) (FRAME_TIME_MS - elapsedTime);
