@@ -20,6 +20,7 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.decode("#3A4E83"));
         add(gameUI, BorderLayout.CENTER);
         this.blockDragController = new BlockDragController(gameUI);
     }

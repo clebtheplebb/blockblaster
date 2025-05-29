@@ -36,7 +36,7 @@ public class BlockDragController extends MouseAdapter {
             int cols = shape[0].length;
             int blockYOffset = Grid.SIZE * GameUI.GRID_CELL_SIZE + GameUI.PADDING; // blocks below the grid
             int offsetX = i * blockAreaWidth + (blockAreaWidth - cols * GameUI.BLOCK_CELL_SIZE) / 2 + GameUI.PADDING;
-            int offsetY = blockYOffset + (GameUI.BLOCK_CELL_SIZE * (5 - rows)) / 2;
+            int offsetY = blockYOffset + (GameUI.BLOCK_CELL_SIZE * (5 - rows)) / 2 + GameUI.PADDING / 2;
             Rectangle blockRect = new Rectangle(offsetX, offsetY, cols * GameUI.BLOCK_CELL_SIZE, rows * GameUI.BLOCK_CELL_SIZE);
             if (blockRect.contains(x, y)) {
                 draggedBlock = block;

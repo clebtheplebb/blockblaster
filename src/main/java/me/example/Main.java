@@ -13,8 +13,8 @@ public class Main {
         boolean running = true;
         while (running) {
             long currentTime = System.currentTimeMillis();
-            long lastUpateTime = System.currentTimeMillis();
-            long elapsedTime = currentTime - lastUpateTime;
+            long lastUpdateTime = System.currentTimeMillis();
+            long elapsedTime = currentTime - lastUpdateTime;
 
             //update
             //render
@@ -44,7 +44,7 @@ public class Main {
                 }
             }
 
-            lastUpateTime = System.currentTimeMillis();
+            lastUpdateTime = System.currentTimeMillis();
         }
     }
 

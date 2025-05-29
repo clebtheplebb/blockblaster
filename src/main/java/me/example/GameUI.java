@@ -4,9 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Combines the grid and block UI into a single panel.
- */
 public class GameUI extends JPanel {
     private Grid grid;
     public static final int GRID_CELL_SIZE = 32;
@@ -22,6 +19,7 @@ public class GameUI extends JPanel {
     public GameUI(Grid grid) {
         this.grid = grid;
         setPreferredSize(new Dimension(Grid.SIZE * GRID_CELL_SIZE, GRID_CELL_SIZE * Grid.SIZE + BLOCK_CELL_SIZE * 5 + PADDING));
+        setOpaque(false); // Make background transparent
     }
 
     public void setDraggedBlock(Block block, Point location, int offsetX, int offsetY) {
@@ -73,6 +71,8 @@ public class GameUI extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int[][] board = grid.getBoard();
+        Color[][] cellColors = grid.getBlockColors();
+
         // Highlight preview if dragging
         if (draggedBlock != null && dragLocation != null) {
             int[] cell = getGridCellUnderMouse(dragLocation, dragOffsetX, dragOffsetY);
@@ -92,19 +92,21 @@ public class GameUI extends JPanel {
                 }
             }
         }
+
         // Draw grid
         for (int i = 0; i < Grid.SIZE; i++) {
             for (int j = 0; j < Grid.SIZE; j++) {
                 if (board[i][j] == 0) {
-                    g.setColor(Color.LIGHT_GRAY);
-                } else {
-                    g.setColor(Color.BLUE);
+                    g.setColor(Color.decode("#1B2851"));
+                } else if (cellColors[i][j] != null) {
+                    g.setColor(cellColors[i][j]);
                 }
                 g.fillRect(j * GRID_CELL_SIZE + 32, i * GRID_CELL_SIZE + 32, GRID_CELL_SIZE, GRID_CELL_SIZE);
-                g.setColor(Color.BLACK);
+                g.setColor(Color.decode("#12204A"));
                 g.drawRect(j * GRID_CELL_SIZE + 32, i * GRID_CELL_SIZE + 32, GRID_CELL_SIZE, GRID_CELL_SIZE);
             }
         }
+
         // Draw blocks in their normal positions (below the grid)
         if (GUI.currentBlocks == null) return;
         int totalWidth = Grid.SIZE * GRID_CELL_SIZE;
@@ -118,11 +120,11 @@ public class GameUI extends JPanel {
             int rows = shape.length;
             int cols = shape[0].length;
             int offsetX = i * blockAreaWidth + (blockAreaWidth - cols * BLOCK_CELL_SIZE) / 2 + PADDING;
-            int offsetY = blockYOffset + (BLOCK_CELL_SIZE * (5 - rows)) / 2;
+            int offsetY = blockYOffset + (BLOCK_CELL_SIZE * (5 - rows)) / 2 + PADDING / 2;
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
                     if (shape[r][c] == 1) {
-                        g.setColor(Color.ORANGE);
+                        g.setColor(block.getColor());
                         g.fillRect(offsetX + c * BLOCK_CELL_SIZE, offsetY + r * BLOCK_CELL_SIZE, BLOCK_CELL_SIZE, BLOCK_CELL_SIZE);
                         g.setColor(Color.BLACK);
                         g.drawRect(offsetX + c * BLOCK_CELL_SIZE, offsetY + r * BLOCK_CELL_SIZE, BLOCK_CELL_SIZE, BLOCK_CELL_SIZE);
@@ -137,12 +139,14 @@ public class GameUI extends JPanel {
                 int[][] shape = draggedBlock.getShape();
                 int rows = shape.length;
                 int cols = shape[0].length;
+                Color origColor = draggedBlock.getColor();
+                Color blockColor = new Color(origColor.getRed(), origColor.getGreen(), origColor.getBlue(), 100); 
                 for (int r = 0; r < rows; r++) {
                     for (int c = 0; c < cols; c++) {
                         if (shape[r][c] == 1) {
                             int gx = (cell[1] + c) * GRID_CELL_SIZE + 32;
                             int gy = (cell[0] + r) * GRID_CELL_SIZE + 32;
-                            g.setColor(new Color(0, 255, 0, 100)); // semi-transparent green
+                            g.setColor(blockColor.darker()); // semi-transparent green
                             g.fillRect(gx, gy, GRID_CELL_SIZE, GRID_CELL_SIZE);
                             g.setColor(Color.BLACK);
                             g.drawRect(gx, gy, GRID_CELL_SIZE, GRID_CELL_SIZE);
@@ -161,7 +165,7 @@ public class GameUI extends JPanel {
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
                     if (shape[r][c] == 1) {
-                        g.setColor(new Color(255, 200, 0)); // semi-transparent
+                        g.setColor(draggedBlock.getColor()); // semi-transparent
                         g.fillRect(drawX + c * GRID_CELL_SIZE, drawY + r * GRID_CELL_SIZE, GRID_CELL_SIZE, GRID_CELL_SIZE);
                         g.setColor(Color.BLACK);
                         g.drawRect(drawX + c * GRID_CELL_SIZE, drawY + r * GRID_CELL_SIZE, GRID_CELL_SIZE, GRID_CELL_SIZE);
@@ -179,10 +183,13 @@ public class GameUI extends JPanel {
                 int rows = shape.length;
                 int cols = shape[0].length;
                 int[][] board = grid.getBoard();
+                Color[][] cellColors = grid.getBlockColors();
+                Color blockColor = draggedBlock.getColor();
                 for (int r = 0; r < rows; r++) {
                     for (int c = 0; c < cols; c++) {
                         if (shape[r][c] == 1) {
                             board[cell[0] + r][cell[1] + c] = 1;
+                            cellColors[cell[0] + r][cell[1] + c] = blockColor;
                         }
                     }
                 }
@@ -204,6 +211,7 @@ public class GameUI extends JPanel {
                         // Clear the row
                         for (int j = 0; j < Grid.SIZE; j++) {
                             board[r][j] = 0;
+                            cellColors[r][j] = null;
                         }
                     }
                 }
@@ -213,10 +221,10 @@ public class GameUI extends JPanel {
                         // Clear the column
                         for (int i = 0; i < Grid.SIZE; i++) {
                             board[i][c] = 0;
+                            cellColors[i][c] = null;
                         }
                     }
                 }
-                
                 // Mark the placed block as placed instead of removing it
                 draggedBlock.setPlaced(true);
                 clearDraggedBlock();

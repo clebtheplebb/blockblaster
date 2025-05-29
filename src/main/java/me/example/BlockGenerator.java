@@ -7,10 +7,14 @@ import java.util.Random;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.awt.Color;
 
 public class BlockGenerator {
-    
 
+    public static List<Color> colors = Arrays.asList(
+            Color.decode("#45B94E"), Color.decode("#41B8E3"), Color.decode("#D83D3D"), Color.decode("#D83D3D"), Color.decode("#D83D3D"), Color.decode("#D83D3D"), Color.decode("#F1B94D"), Color.decode("#EC724C")
+    );
+    
     private static ArrayList<Block> findUsableBlocks(Grid grid) {
         ArrayList<Block> usableBlocks = new ArrayList<>();
         int[][] gameBoard = grid.getBoard();
@@ -53,13 +57,13 @@ public class BlockGenerator {
         ArrayList<Block> usableBlocks = findUsableBlocks(grid);
         Random random = new Random();
         List<Block> result = new ArrayList<>();
-        
         for (int i = 0; i < 3 && !usableBlocks.isEmpty(); i++) {
             int index = random.nextInt(usableBlocks.size());
-            result.add(usableBlocks.get(index));
+            Block block = usableBlocks.get(index);
+            block.setColor(colors.get(random.nextInt(colors.size())));
+            result.add(block);
             usableBlocks.remove(index);
         }
-
         return result;
     }
 

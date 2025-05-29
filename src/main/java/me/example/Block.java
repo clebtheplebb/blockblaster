@@ -1,5 +1,7 @@
 package me.example;
 import java.util.Map;
+import java.awt.Color;
+import java.util.List;
 import java.util.Arrays;
 
 public class Block {
@@ -7,6 +9,7 @@ public class Block {
     private int orientation;
     private int x;
     private int y;
+    private Color color = null;
     private boolean placed = false;
 
     public static final Map<String, int[][]> BLOCKS = Map.of(
@@ -85,5 +88,12 @@ public class Block {
     }
     public void setPlaced(boolean placed) {
         this.placed = placed;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

@@ -1,11 +1,13 @@
 package me.example;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Grid {
     private int[][] board;
     public static final int SIZE = 8;
+    public Color[][] blockColors = new Color[SIZE][SIZE];
 
     public Grid() {
         board = new int[SIZE][SIZE];
@@ -29,5 +31,9 @@ public class Grid {
 
     public void setBoard(int[][] newBoard) {
         this.board = newBoard;
+    }
+
+    public Color[][] getBlockColors() {
+        return blockColors;
     }
 }
