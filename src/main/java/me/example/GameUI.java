@@ -6,6 +6,7 @@ import java.util.List;
 
 public class GameUI extends JPanel {
     private Grid grid;
+    private ScoreManager scoreManager;
     public static final int GRID_CELL_SIZE = 32;
     public static final int BLOCK_CELL_SIZE = 16;
     public static final int PADDING = 32;
@@ -17,7 +18,11 @@ public class GameUI extends JPanel {
     private int dragOffsetY = 0;
 
     public GameUI(Grid grid) {
+        this(grid, null);
+    }
+    public GameUI(Grid grid, ScoreManager scoreManager) {
         this.grid = grid;
+        this.scoreManager = scoreManager;
         setPreferredSize(new Dimension(Grid.SIZE * GRID_CELL_SIZE, GRID_CELL_SIZE * Grid.SIZE + BLOCK_CELL_SIZE * 5 + PADDING));
         setOpaque(false); // Make background transparent
     }
@@ -185,18 +190,18 @@ public class GameUI extends JPanel {
                 int[][] board = grid.getBoard();
                 Color[][] cellColors = grid.getBlockColors();
                 Color blockColor = draggedBlock.getColor();
+                int placedCells = 0;
                 for (int r = 0; r < rows; r++) {
                     for (int c = 0; c < cols; c++) {
                         if (shape[r][c] == 1) {
                             board[cell[0] + r][cell[1] + c] = 1;
                             cellColors[cell[0] + r][cell[1] + c] = blockColor;
+                            placedCells++;
                         }
                     }
                 }
-
                 int[] rowTotals = new int[Grid.SIZE];
                 int[] colTotals = new int[Grid.SIZE];
-
                 // Calculate row and column totals
                 for (int i = 0; i < Grid.SIZE; i++) {
                     for (int j = 0; j < Grid.SIZE; j++) {
@@ -204,28 +209,40 @@ public class GameUI extends JPanel {
                         colTotals[j] += board[i][j];
                     }
                 }
-
+                int linesCleared = 0;
                 // Check for completed rows and columns
                 for (int r = 0; r < Grid.SIZE; r++) {
                     if (rowTotals[r] == Grid.SIZE) {
-                        // Clear the row
                         for (int j = 0; j < Grid.SIZE; j++) {
                             board[r][j] = 0;
                             cellColors[r][j] = null;
                         }
+                        linesCleared++;
                     }
                 }
-
                 for (int c = 0; c < Grid.SIZE; c++) {
                     if (colTotals[c] == Grid.SIZE) {
-                        // Clear the column
                         for (int i = 0; i < Grid.SIZE; i++) {
                             board[i][c] = 0;
                             cellColors[i][c] = null;
                         }
+                        linesCleared++;
                     }
                 }
-                // Mark the placed block as placed instead of removing it
+                // Score update
+                if (scoreManager != null) {
+                    scoreManager.addBlockScore(placedCells);
+                    if (linesCleared > 0) scoreManager.addClearScore(linesCleared);
+                }
+                // Update score UI if available
+                if (getTopLevelAncestor() instanceof JFrame) {
+                    JFrame frame = (JFrame) getTopLevelAncestor();
+                    for (Component comp : frame.getContentPane().getComponents()) {
+                        if (comp instanceof ScoreUI) {
+                            ((ScoreUI) comp).updateScore();
+                        }
+                    }
+                }
                 draggedBlock.setPlaced(true);
                 clearDraggedBlock();
                 repaint();

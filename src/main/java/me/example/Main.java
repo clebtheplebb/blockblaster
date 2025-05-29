@@ -8,7 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
         Grid grid = new Grid();
-        GUI gui = new GUI(grid);
+        ScoreManager scoreManager = new ScoreManager();
+        GUI gui = new GUI(grid, scoreManager);
         gui.setVisible(true);
         boolean running = true;
         while (running) {
