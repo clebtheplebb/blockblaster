@@ -17,9 +17,6 @@ public class GameUI extends JPanel {
     private int dragOffsetX = 0;
     private int dragOffsetY = 0;
 
-    public GameUI(Grid grid) {
-        this(grid, null);
-    }
     public GameUI(Grid grid, ScoreManager scoreManager) {
         this.grid = grid;
         this.scoreManager = scoreManager;
