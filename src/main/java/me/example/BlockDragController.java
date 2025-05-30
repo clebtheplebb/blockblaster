@@ -61,6 +61,10 @@ public class BlockDragController extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         gameUI.placeBlockIfPossible();
+        boolean canMakeMove = gameUI.anyBlockPlaceable(GUI.currentBlocks);
+        if (!canMakeMove) {
+            gameUI.scoreManager.gameOver();
+        }
         draggedBlock = null;
         dragLocation = null;
         draggedBlockIndex = -1;

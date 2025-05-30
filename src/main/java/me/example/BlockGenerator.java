@@ -33,7 +33,7 @@ public class BlockGenerator {
         return usableBlocks;
     }
 
-    private static String isBlockUsable(int[][] gameBoard, Block block){
+    public static String isBlockUsable(int[][] gameBoard, Block block){
         for (int i = 0; i <= gameBoard.length - block.getShape().length; i++) {
             for (int j = 0; j <= gameBoard[0].length - block.getShape()[0].length; j++) {
                 boolean canPlace = true;

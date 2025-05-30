@@ -19,6 +19,10 @@ public class Main {
 
             //update
             //render
+            if (scoreManager.isGameOver()) {
+                gui.showGameOver();
+            }
+
             boolean allPlaced = false;
             if (GUI.currentBlocks != null && !GUI.currentBlocks.isEmpty()) {
                 allPlaced = true;

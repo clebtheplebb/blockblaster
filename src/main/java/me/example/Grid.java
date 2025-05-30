@@ -36,4 +36,14 @@ public class Grid {
     public Color[][] getBlockColors() {
         return blockColors;
     }
+
+    public void reset() {
+        board = new int[SIZE][SIZE];
+        blockColors = new Color[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                blockColors[i][j] = null;
+            }
+        }
+    }
 }

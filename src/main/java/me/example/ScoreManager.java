@@ -2,6 +2,7 @@ package me.example;
 
 public class ScoreManager {
     private int score = 0;
+    private boolean gameOver = false;
 
     public void addBlockScore(int cells) {
         score += cells;
@@ -17,5 +18,14 @@ public class ScoreManager {
 
     public void reset() {
         score = 0;
+        gameOver = false;
+    }
+
+    public void gameOver() {
+        this.gameOver = true;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class GameUI extends JPanel {
     private Grid grid;
-    private ScoreManager scoreManager;
+    public ScoreManager scoreManager;
     public static final int GRID_CELL_SIZE = 32;
     public static final int BLOCK_CELL_SIZE = 16;
     public static final int PADDING = 32;
@@ -252,5 +252,31 @@ public class GameUI extends JPanel {
         clearDraggedBlock();
         repaint();
         return false;
+    }
+
+    public boolean anyBlockPlaceable(List<Block> blocks) {
+        int placed = 0;
+        for (Block block : blocks) {
+            if (block.isPlaced()) {
+                placed++;
+                continue;
+            }
+            int[][] shape = block.getShape();
+            int shapeRows = shape.length;
+            int shapeCols = shape[0].length;
+            for (int row = 0; row <= Grid.SIZE - shapeRows; row++) {
+                for (int col = 0; col <= Grid.SIZE - shapeCols; col++) {
+                    if (canPlaceBlock(block, row, col)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (placed == blocks.size()) return true;
+        return false;
+    }
+
+    public Grid getGrid() {
+        return grid;
     }
 }

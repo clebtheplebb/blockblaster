@@ -28,7 +28,7 @@ public class GUI extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.decode("#3A4E83"));
-        add(scoreUI, BorderLayout.SOUTH);
+        add(scoreUI, BorderLayout.NORTH);
         add(gameUI, BorderLayout.CENTER);
         this.blockDragController = new BlockDragController(gameUI);
     }
@@ -41,5 +41,20 @@ public class GUI extends JFrame {
         GUI.currentBlocks = BlockGenerator.getThreeUsableBlocks(grid);
         if (scoreUI != null) scoreUI.updateScore();
         repaint();
+    }
+
+    public void showGameOver() {
+        JOptionPane.showMessageDialog(this, "Game Over!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        // Restart the game
+        if (scoreManager != null) scoreManager.reset();
+        if (grid != null) grid.reset();
+        GUI.currentBlocks = BlockGenerator.getThreeUsableBlocks(grid);
+        repaint();
+    }
+
+    @Override
+    public void repaint() {
+        if (scoreUI != null) scoreUI.updateScore();
+        super.repaint();
     }
 }
